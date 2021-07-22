@@ -1,0 +1,26 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+class view {
+  data;
+  render(data) {
+    this.data = data;
+    const markup = this.generateMarkup();
+    this.clear();
+    this.parentElement.insertAdjacentHTML('afterbegin', markup);
+  }
+  clear() {
+    this.parentElement.innerHTML = '';
+  }
+  renderSpinner = function () {
+    const markup = `
+     <div class="spinner">
+     <svg>
+       <use href="${icons}#icon-loader"></use>
+     </svg>
+     </div>
+     `;
+    this.clear();
+    this.parentElement.insertAdjacentHTML('afterbegin', markup);
+  };
+}
+exports.default = view;

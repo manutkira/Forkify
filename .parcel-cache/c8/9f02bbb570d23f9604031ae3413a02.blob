@@ -1,0 +1,74 @@
+var _modelJs = require('./model.js');
+var _viewsRecipeViewsJs = require('./views/recipeViews.js');
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+var _viewsRecipeViewsJsDefault = _parcelHelpers.interopDefault(_viewsRecipeViewsJs);
+var _viewsSearchViewsJs = require('./views/searchViews.js');
+var _viewsSearchViewsJsDefault = _parcelHelpers.interopDefault(_viewsSearchViewsJs);
+var _viewsResultViewJs = require('./views/resultView.js');
+var _viewsResultViewJsDefault = _parcelHelpers.interopDefault(_viewsResultViewJs);
+var _viewsPaginationViewJs = require('./views/PaginationView.js');
+var _viewsPaginationViewJsDefault = _parcelHelpers.interopDefault(_viewsPaginationViewJs);
+var _viewsBookmarkViewJs = require('./views/bookmarkView.js');
+var _viewsBookmarkViewJsDefault = _parcelHelpers.interopDefault(_viewsBookmarkViewJs);
+require('core-js/stable');
+require('regenerator-runtime/runtime');
+var _viewsRecipeViewsJsDefault = _parcelHelpers.interopDefault(_viewsRecipeViewsJs);
+// if (module.hot) {
+// module.hot.accept();
+// }
+const timeout = function (s) {
+  return new Promise(function (_, reject) {
+    setTimeout(function () {
+      reject(new Error(`Request took too long! Timeout after ${s} second`));
+    }, s * 1000);
+  });
+};
+// /////////////////////////////////////
+const controlRecipe = async function () {
+  try {
+    const id = window.location.hash.slice(1);
+    if (!id) return;
+    _viewsRecipeViewsJsDefault.default.renderSpinner();
+    _viewsResultViewJsDefault.default.update(_modelJs.getSearchResultPage());
+    // loading recipe
+    await _modelJs.loadRecipe(id);
+    // rendering recipe
+    _viewsRecipeViewsJsDefault.default.render(_modelJs.state.recipe);
+  } catch (err) {
+    _viewsRecipeViewsJsDefault.default.renderError();
+  }
+};
+const controlSearchResult = async function () {
+  try {
+    _viewsResultViewJsDefault.default.renderSpinner();
+    const query = _viewsSearchViewsJsDefault.default.getQuery();
+    if (!query) return;
+    await _modelJs.loadSearchResults(query);
+    _viewsResultViewJsDefault.default.render(_modelJs.getSearchResultPage());
+    _viewsPaginationViewJsDefault.default.render(_modelJs.state.search);
+  } catch (err) {
+    console.error(err);
+  }
+};
+const controlPagination = function (goToPage) {
+  _viewsResultViewJsDefault.default.render(_modelJs.getSearchResultPage(goToPage));
+  _viewsPaginationViewJsDefault.default.render(_modelJs.state.search);
+};
+const controlServing = function (newServing) {
+  _modelJs.updateServing(newServing);
+  // recipeView.render(model.state.recipe);
+  _viewsRecipeViewsJsDefault.default.render(_modelJs.state.recipe);
+};
+const controlBookmark = function () {
+  if (!_modelJs.state.recipe.bookmark) _modelJs.addBookmark(_modelJs.state.recipe); else _modelJs.removeBookmark(_modelJs.state.recipe.id);
+  _viewsRecipeViewsJsDefault.default.update(_modelJs.state.recipe);
+  _viewsBookmarkViewJsDefault.default.render(_modelJs.state.bookmark);
+};
+const init = () => {
+  _viewsRecipeViewsJsDefault.default.addHandlerRender(controlRecipe);
+  _viewsRecipeViewsJsDefault.default.addHandlerUpdateServing(controlServing);
+  _viewsRecipeViewsJsDefault.default.addHandlerAddBookmark(controlBookmark);
+  _viewsSearchViewsJsDefault.default.addhandlerSearch(controlSearchResult);
+  _viewsPaginationViewJsDefault.default.addHandlerClick(controlPagination);
+};
+init();

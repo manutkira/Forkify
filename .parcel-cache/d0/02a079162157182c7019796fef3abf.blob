@@ -1,0 +1,32 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+var _urlImgIconsSvg = require('url:../../img/icons.svg');
+var _urlImgIconsSvgDefault = _parcelHelpers.interopDefault(_urlImgIconsSvg);
+class RecipeView {
+  parentElement = document.querySelector('.recipe');
+  #undefined = function () {
+    return this.parentElement;
+  };
+  // #data;
+  // render(data) {
+  // this.#data = data;
+  // const markup = this.#generateMarkup();
+  // this.#clear;
+  // this.#parentElement.insertAdjacentHTML('afterbegin', markup);
+  // }
+  // #clear() {
+  // this.#parentElement.innerHTML = '';
+  // }
+  renderSpinner = function () {
+    const markup = `
+     <div class="spinner">
+     <svg>
+       <use href="${_urlImgIconsSvgDefault.default}#icon-loader"></use>
+     </svg>
+     </div>
+     `;
+    this.parentElement.innerHTML = '';
+    this.parentElement.insertAdjacentHTML('afterbegin', markup);
+  };
+}
+exports.default = new RecipeView();

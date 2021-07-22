@@ -1,0 +1,9 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+require('url:../../img/icons.svg');
+class RecipeView {
+  num = function () {
+    return 10;
+  };
+}
+exports.default = new RecipeView();

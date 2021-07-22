@@ -1,0 +1,68 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "state", function () {
+  return state;
+});
+_parcelHelpers.export(exports, "loadRecipe", function () {
+  return loadRecipe;
+});
+_parcelHelpers.export(exports, "loadSearchResults", function () {
+  return loadSearchResults;
+});
+_parcelHelpers.export(exports, "getSearchResultPage", function () {
+  return getSearchResultPage;
+});
+require('regenerator-runtime');
+var _configJs = require('./config.js');
+var _helperJs = require('./helper.js');
+const state = {
+  recipe: {},
+  search: {
+    query: '',
+    result: [],
+    resultPage: _configJs.Result_per_page
+  }
+};
+const loadRecipe = async function (id) {
+  try {
+    const data = await _helperJs.getJSON(`${_configJs.API_URL}/${id}`);
+    const {recipe} = data.data;
+    state.recipe = {
+      id: recipe.id,
+      title: recipe.title,
+      publisher: recipe.publisher,
+      image: recipe.image_url,
+      sourceUrl: recipe.source_url,
+      servings: recipe.servings,
+      cookingTime: recipe.cooking_time,
+      ingredients: recipe.ingredients
+    };
+  } catch (err) {
+    console.error(`${err}😶‍🌫️​😶‍🌫️​😶‍🌫️​😶‍🌫️​`);
+    throw err;
+  }
+};
+const loadSearchResults = async function (query) {
+  try {
+    state.search.query = query;
+    const data = await _helperJs.getJSON(`${_configJs.API_URL}/?search=${query}`);
+    state.search.result = data.data.recipes.map(rec => {
+      return {
+        id: rec.id,
+        title: rec.title,
+        publisher: rec.publisher,
+        image: rec.image_url
+      };
+    });
+  } catch (err) {
+    console.error(`${err}😶‍🌫️​😶‍🌫️​😶‍🌫️​😶‍🌫️​`);
+    throw err;
+  }
+};
+const getSearchResultPage = function (page = state.search.page) {
+  state.search.page = page;
+  console.log(state.search);
+  const start = (page - 1) * state.search.resultPage;
+  const end = page * state.search.resultPage;
+  return state.search.result.slice(start, end);
+};

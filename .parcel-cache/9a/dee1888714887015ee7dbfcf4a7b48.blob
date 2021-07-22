@@ -1,0 +1,45 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "state", function () {
+  return state;
+});
+_parcelHelpers.export(exports, "loadRecipe", function () {
+  return loadRecipe;
+});
+_parcelHelpers.export(exports, "loadSearchResults", function () {
+  return loadSearchResults;
+});
+require('regenerator-runtime');
+var _configJs = require('./config.js');
+var _helperJs = require('./helper.js');
+const state = {
+  recipe: {}
+};
+const loadRecipe = async function (id) {
+  try {
+    const data = await _helperJs.getJSON(`${_configJs.API_URL}/${id}`);
+    const {recipe} = data.data;
+    state.recipe = {
+      id: recipe.id,
+      title: recipe.title,
+      publisher: recipe.publisher,
+      image: recipe.image_url,
+      sourceUrl: recipe.source_url,
+      servings: recipe.servings,
+      cookingTime: recipe.cooking_time,
+      ingredients: recipe.ingredients
+    };
+  } catch (err) {
+    console.error(`${err}😶‍🌫️​😶‍🌫️​😶‍🌫️​😶‍🌫️​`);
+    throw err;
+  }
+};
+const loadSearchResults = async function (query) {
+  try {
+    const data = await _helperJs.getJSON(`${_configJs.API_URL}?search=${query}`);
+    console.log(data);
+  } catch (err) {
+    console.error(`${err}😶‍🌫️​😶‍🌫️​😶‍🌫️​😶‍🌫️​`);
+    throw err;
+  }
+};

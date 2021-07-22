@@ -1,0 +1,34 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+var _viewJs = require('./view.js');
+var _viewJsDefault = _parcelHelpers.interopDefault(_viewJs);
+var _urlImgIconsSvg = require('url:../../img/icons.svg');
+var _urlImgIconsSvgDefault = _parcelHelpers.interopDefault(_urlImgIconsSvg);
+class ResultsView extends _viewJsDefault.default {
+  parentElement = document.querySelector('.results');
+  generateMarkup() {
+    return this.data.map(this.generateMarkupPrev).join('');
+  }
+  generateMarkupPrev(result) {
+    return `
+    li class="preview">
+            <a class="preview__link preview__link--active" href="#${result.id}">
+              <figure class="preview__fig">
+                <img src="${result.image}" alt="Test" />
+              </figure>
+              <div class="preview__data">
+                <h4 class="preview__title">${result.title}</h4>
+                <p class="preview__publisher">${result.publisher}</p>
+                <div class="preview__user-generated">
+                  <svg>
+                    <use href="${_urlImgIconsSvgDefault.default}#icon-user"></use>
+                  </svg>
+                </div>
+              </div>
+            </a>
+          </li>
+
+    `;
+  }
+}
+exports.default = new ResultsView();

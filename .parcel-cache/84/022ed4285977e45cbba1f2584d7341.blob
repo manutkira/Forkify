@@ -1,0 +1,96 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "state", function () {
+  return state;
+});
+_parcelHelpers.export(exports, "loadRecipe", function () {
+  return loadRecipe;
+});
+_parcelHelpers.export(exports, "loadSearchResults", function () {
+  return loadSearchResults;
+});
+_parcelHelpers.export(exports, "getSearchResultPage", function () {
+  return getSearchResultPage;
+});
+_parcelHelpers.export(exports, "updateServing", function () {
+  return updateServing;
+});
+_parcelHelpers.export(exports, "addBookmark", function () {
+  return addBookmark;
+});
+_parcelHelpers.export(exports, "removeBookmark", function () {
+  return removeBookmark;
+});
+require('regenerator-runtime');
+var _configJs = require('./config.js');
+var _helperJs = require('./helper.js');
+require('./views/recipeViews.js');
+const state = {
+  recipe: {},
+  search: {
+    query: '',
+    result: [],
+    page: 1,
+    resultPage: _configJs.Result_per_page
+  },
+  bookmark: []
+};
+const loadRecipe = async function (id) {
+  try {
+    const data = await _helperJs.getJSON(`${_configJs.API_URL}/${id}`);
+    const {recipe} = data.data;
+    state.recipe = {
+      id: recipe.id,
+      title: recipe.title,
+      publisher: recipe.publisher,
+      image: recipe.image_url,
+      sourceUrl: recipe.source_url,
+      servings: recipe.servings,
+      cookingTime: recipe.cooking_time,
+      ingredients: recipe.ingredients
+    };
+    if (state.bookmark.some(BM => BM.id === id)) state.recipe.bookmark = true; else state.recipe.bookmark = false;
+  } catch (err) {
+    console.error(`${err}😶‍🌫️​😶‍🌫️​😶‍🌫️​😶‍🌫️​`);
+    throw err;
+  }
+};
+const loadSearchResults = async function (query) {
+  try {
+    state.search.query = query;
+    const data = await _helperJs.getJSON(`${_configJs.API_URL}/?search=${query}`);
+    state.search.result = data.data.recipes.map(rec => {
+      return {
+        id: rec.id,
+        title: rec.title,
+        publisher: rec.publisher,
+        image: rec.image_url
+      };
+    });
+    state.search.page = 1;
+  } catch (err) {
+    console.error(`${err}😶‍🌫️​😶‍🌫️​😶‍🌫️​😶‍🌫️​`);
+    throw err;
+  }
+};
+const getSearchResultPage = function (page = state.search.page) {
+  state.search.page = page;
+  const start = (page - 1) * state.search.resultPage;
+  const end = page * state.search.resultPage;
+  return state.search.result.slice(start, end);
+};
+const updateServing = function (newServing) {
+  state.recipe.ingredients.forEach(ing => {
+    ing.quantity = ing.quantity * newServing / state.recipe.servings;
+  });
+  state.recipe.servings = newServing;
+};
+const addBookmark = function (recipe) {
+  state.bookmark.push(recipe);
+  if (recipe.id === state.recipe.id) state.recipe.bookmark = true;
+};
+const removeBookmark = function (id) {
+  const index = state.bookmark.findIndex(el => el.id === id);
+  state.bookmark.splice(index, 1);
+  if (id === state.recipe.id) state.recipe.bookmark = false;
+};

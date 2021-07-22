@@ -1,0 +1,25 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+var _viewJs = require('./view.js');
+var _viewJsDefault = _parcelHelpers.interopDefault(_viewJs);
+require('url:../../img/icons.svg');
+class AddRecipeView extends _viewJsDefault.default {
+  parentElement = document.querySelector('.pagination');
+  window = document.querySelector('.add-recipe-window');
+  overlay = document.querySelector('.overlay');
+  btnOpen = document.querySelector('.nav__btn--add-recipe');
+  btnClose = document.querySelector('.nav--close-modal');
+  constructor() {
+    super();
+    this.addHandlerShowWindow();
+  }
+  toggleWindow() {
+    this.overlay.classList.toggle('hidden');
+    this.window.classList.toggle('hidden');
+  }
+  addHandlerShowWindow() {
+    this.btnOpen.addEventListener('click', this.toggleWindow.bind(this));
+  }
+  generateMarkup() {}
+}
+exports.default = new AddRecipeView();
